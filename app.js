@@ -24,7 +24,7 @@ const passport=require("passport");
 const Localstrategy=require("passport-local");
 const user=require("./models/user.js");
 const listing=require("./models/listing");
-
+const Mongo_url='mongodb://127.0.0.1:27017/wanderlust';
 const dbUrl=process.env.ATLASDB_URL;
 
 main().then((res) => {
@@ -74,6 +74,11 @@ app.use((req,res,next)=>{
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
     next();
+})
+
+app.get("/",async(req,res)=>{
+    let listings=await listing.find();
+    res.render("listing/index.ejs",{listings}); 
 })
 
 app.get("/listings/category",async (req,res)=>{
