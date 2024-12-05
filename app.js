@@ -77,7 +77,15 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.get('/', async(req, res) => {
+
+async (req, res, next) => {
+    let listings = await listing.find();
+    res.render("listing/index.ejs", { listings });
+};
+
+
+
+app.get("/", async(req, res) => {
     let listings=await listing.find();
     res.render("listing/index.ejs",{listings}); // Or wherever your index.html is located
   });
