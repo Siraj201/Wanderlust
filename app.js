@@ -24,6 +24,7 @@ const passport=require("passport");
 const Localstrategy=require("passport-local");
 const user=require("./models/user.js");
 const listing=require("./models/listing");
+const Mongo_url="mongodb://127.0.0.1:27017/wanderlust"
 
 const dbUrl=process.env.ATLASDB_URL;
 
@@ -34,11 +35,11 @@ main().then((res) => {
 });
 
 async function main() {
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(Mongo_url);
 }
 
 const store=MongoStore.create({
-    mongoUrl:dbUrl,
+    mongoUrl:Mongo_url,
     crypto:{
         secret:process.env.SECRET,
     },
@@ -76,6 +77,11 @@ app.use((req,res,next)=>{
     next();
 })
 
+app.get('/', async(req, res) => {
+    let listings=await listing.find();
+    res.render("listing/index.ejs",{listings}); // Or wherever your index.html is located
+  });
+
 app.get("/listings/category",async (req,res)=>{
     let {category}=req.query;
     console.log(category);
@@ -86,6 +92,10 @@ app.get("/listings/category",async (req,res)=>{
     }
    res.render("listing/location.ejs",{listings});
 })
+
+
+
+
 
 app.get("/listings/country",async (req,res)=>{
     let{location}={...req.query.listings};
@@ -106,6 +116,8 @@ app.use("/",userRouter);
 app.all("*", (req, res, next) => {
     next(new expressError(400, "page not found"));
 });
+
+
 
 // error handling middleware
 app.use((err, req, res, next) => {
