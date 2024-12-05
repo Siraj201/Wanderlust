@@ -77,19 +77,6 @@ app.use((req,res,next)=>{
     next();
 })
 
-
-async (req, res, next) => {
-    let listings = await listing.find();
-    res.render("listing/index.ejs", { listings });
-};
-
-
-
-app.get("/", async(req, res) => {
-    let listings=await listing.find();
-    res.render("listing/index.ejs",{listings}); // Or wherever your index.html is located
-  });
-
 app.get("/listings/category",async (req,res)=>{
     let {category}=req.query;
     console.log(category);
@@ -100,10 +87,6 @@ app.get("/listings/category",async (req,res)=>{
     }
    res.render("listing/location.ejs",{listings});
 })
-
-
-
-
 
 app.get("/listings/country",async (req,res)=>{
     let{location}={...req.query.listings};
@@ -124,8 +107,6 @@ app.use("/",userRouter);
 app.all("*", (req, res, next) => {
     next(new expressError(400, "page not found"));
 });
-
-
 
 // error handling middleware
 app.use((err, req, res, next) => {
